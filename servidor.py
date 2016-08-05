@@ -1,4 +1,5 @@
 #coding: utf-8
+<<<<<<< HEAD
 # Matheus da Cunha Melo Almeida
 # 115210030
 # matheus.almeida@ccc.ufcg.edu.br
@@ -24,10 +25,28 @@ def cadastro(nome,senha): # Função de cadastro
 	if ex != None: # Caso já exista, retornar 'jc' (já cadastrado)
 		return 'jc'
 	else: # Caso não exista, cadastrar.
+=======
+import socket
+import sqlite3
+import thread
+
+def dbConnect():
+	conn = sqlite3.connect('database.db')
+	c = conn.cursor()
+	return c,conn
+def cadastro(nome,senha):
+	c,conn = dbConnect()
+	ex = c.execute('select nome from users where nome="%s"' % nome)
+	ex = c.fetchone()
+	if ex != None:
+		return 'jc'
+	else:
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		c.execute('insert into users(nome,pass,reais,btc) values("%s","%s",0,0)' % (nome,senha))
 		conn.commit()
 		return 'sucesso'
 
+<<<<<<< HEAD
 def login(nome,senha): # Função de login
 	c,conn = dbConnect()
 	ex = c.execute('select nome from users where nome="%s"' % nome) # Busca o usuário com o nome informado
@@ -85,6 +104,26 @@ def comprar(data): # Função para comprar
 	c,conn = dbConnect()
 	try:
 		# Testar se o comando está correto
+=======
+def login(nome,senha):
+	c,conn = dbConnect()
+	ex = c.execute('select nome from users where nome="%s"' % nome)
+	ex = c.fetchone()
+	if ex == None:
+		return 'naocadastrado'
+	else:
+		ex = c.execute('select pass from users where nome="%s" and pass="%s"' % (nome,senha))
+		ex = c.fetchone()
+		if ex == None:
+			return 'usuariosenha'
+		else:
+			return 'sucesso'
+
+def comprar(data):
+	data.pop(0)
+	c,conn = dbConnect()
+	try:
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		float(data[1])
 		float(data[2])
 	except ValueError:
@@ -92,7 +131,12 @@ def comprar(data): # Função para comprar
 	if len(data) < 3:
 		# Testar se o comando realmente está completo
 		return 'Uso incorreto do comando.'
+<<<<<<< HEAD
 	else: # Se estiver, executar verificações
+=======
+	else:
+		data[1],data[2] = float(data[1]),float(data[2])
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		nome = data[0]
 		qntBTC = float(data[1])
 		preco = float(data[2])
@@ -129,9 +173,15 @@ def comprar(data): # Função para comprar
 					novoSaldoBTC = novoSaldoBTC[0] + qntAVenda
 					data2 = ['comprar',nome, qntBTC - qntAVenda, preco]
 					c.execute('update users set btc = %.8f where nome = "%s"' % (novoSaldoBTC,nome))
+<<<<<<< HEAD
 					c.execute('update users set reais = %.2f where nome = "%s"' % (novoSaldoComprador,nome))
 					c.execute('update users set reais = %.2f where nome = "%s"' % (novoSaldoVendedor,vendedor))
 					c.execute('delete from vendas where usuario = "%s" and preco = %.2f limit 1' % (vendedor,preco))
+=======
+					c.execute('update users set reais = "%.2f" where nome = "%s"' % (novoSaldoComprador,nome))
+					c.execute('update users set reais = "%.2f" where nome = "%s"' % (novoSaldoVendedor,vendedor))
+					c.execute('delete from vendas where usuario = "%s" and preco = "%.2f" limit 1' % (vendedor,preco))
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 					conn.commit()
 					comprar(data2)
 					return 'Ordem de compra realizada com sucesso.'
@@ -162,7 +212,11 @@ def comprar(data): # Função para comprar
 			else:
 				# Caso não haja um usuário vendendo ao preço informado, 
 				# abrir uma nova ordem de compra.
+<<<<<<< HEAD
 				c.execute('insert into compras(usuario,qntBTC,preco) values("%s",%.8f,%.2f)' % (nome,qntBTC,preco))
+=======
+				c.execute('insert into compras(usuario,qntBTC,preco) values("%s",%.2f,%.2f)' % (nome,qntBTC,preco))
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 				c.execute('update users set reais = %.2f where nome = "%s"' % (novoSaldoComprador,nome))
 				conn.commit()
 				return 'Ordem de compra realizada com sucesso.'
@@ -170,7 +224,10 @@ def vender(data):
 	data.pop(0)
 	c,conn = dbConnect()
 	try:
+<<<<<<< HEAD
 		# Testar se o comando está correto
+=======
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		float(data[1])
 		float(data[2])
 	except ValueError:
@@ -178,7 +235,11 @@ def vender(data):
 	if len(data) < 3:
 		# Testar se o comando realmente está completo
 		return 'Uso incorreto do comando.'
+<<<<<<< HEAD
 	else: # Caso esteja, executar verificações
+=======
+	else:
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		nome = data[0]
 		qntBTC = float(data[1])
 		preco = float(data[2])
@@ -215,9 +276,15 @@ def vender(data):
 					novoSaldoReais = novoSaldoReais[0] - (qntACompra * preco)
 					data2 = ['comprar',nome, qntBTC - qntACompra, preco]
 					c.execute('update users set reais = %.2f where nome = "%s"' % (novoSaldoReais,nome))
+<<<<<<< HEAD
 					c.execute('update users set btc = %.8f where nome = "%s"' % (novoSaldoVendedor,nome))
 					c.execute('update users set btc = %.8f where nome = "%s"' % (novoSaldoComprador,comprador))
 					c.execute('delete from compras where usuario = "%s" and preco = %.2" limit 1' % (comprador,preco))
+=======
+					c.execute('update users set btc = "%.8f" where nome = "%s"' % (novoSaldoVendedor,nome))
+					c.execute('update users set btc = "%.8f" where nome = "%s"' % (novoSaldoComprador,comprador))
+					c.execute('delete from compras where usuario = "%s" and preco = "%.2f" limit 1' % (comprador,preco))
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 					conn.commit()
 					vender(data2)
 					return 'Ordem de venda realizada com sucesso.'
@@ -235,26 +302,39 @@ def vender(data):
 					return 'Ordem de venda realizada com sucesso.'
 				elif qntACompra > qntBTC:
 					# Caso a quantidade a venda seja maior que a quantidade de Bitcoins pedida,
+<<<<<<< HEAD
 					# simplesmente realizar a compra.
+=======
+					# Simplesmente realizar a compra.
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 					ex = c.execute('select reais from users where nome = "%s"' % nome)
 					novoSaldoReais = ex.fetchone()
 					novoSaldoReais = novoSaldoReais[0] + (qntBTC * preco)
 					c.execute('update users set reais = %.2f where nome = "%s"' % (novoSaldoReais,nome))
 					c.execute('update users set btc = "%.8f" where nome = "%s"' % (novoSaldoVendedor,nome))
 					c.execute('update users set btc = "%.8f" where nome = "%s"' % (novoSaldoComprador,comprador))
+<<<<<<< HEAD
 					c.execute('update compras set qntBTC = %.8f where usuario = "%s" and preco = "%.2f" limit 1' % (qntACompra - qntBTC,nome,preco))
+=======
+					c.execute('update compras set qntBTC = %.8f where usuario = "%s" and preco = "%.2f" limit 1' % (qntACompra - qntBTC,vendedor,preco))
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 					conn.commit()
 					return 'Ordem de venda realizada com sucesso.'
 			else:
 				# Caso não haja um usuário comprando ao preço informado, 
 				# abrir uma nova ordem de venda.
 				novoSaldoVendedor = saldoVendedor - qntBTC
+<<<<<<< HEAD
 				c.execute('insert into vendas(usuario,qntBTC,preco) values("%s",%.8f,%.2f)' % (nome,qntBTC,preco))
+=======
+				c.execute('insert into vendas(usuario,qntBTC,preco) values("%s",%.2f,%.2f)' % (nome,qntBTC,preco))
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 				c.execute('update users set btc = %.8f where nome = "%s"' % (novoSaldoVendedor,nome))
 				conn.commit()
 				return 'Ordem de venda realizada com sucesso.'
 
 def compras():
+<<<<<<< HEAD
 	# Lista de compras
 	c,conn = dbConnect() # Conecta com a database
 	ex = c.execute('select * from compras') # Seleciona todas as compras da tabela
@@ -265,10 +345,22 @@ def compras():
 			data += str(j)+","
 		data += ";"
 	if data == "": # Caso não haja compras, retornar o status.
+=======
+	c,conn = dbConnect()
+	ex = c.execute('select * from compras')
+	ex = ex.fetchall()
+	data = ""
+	for i in ex:
+		for j in i:
+			data += str(j)+","
+		data += ";"
+	if data == "":
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		data = "semCompras"
 	return data
 
 def vendas():
+<<<<<<< HEAD
 	# Lista de vendas
 	c,conn = dbConnect() # Conecta a database
 	ex = c.execute('select * from vendas')
@@ -336,12 +428,38 @@ def saque(data): # Função de saque
 		return 'Saque realizado com sucesso.'
 		
 def clientHandler(clientsocket,address): # Função principal
+=======
+	c,conn = dbConnect()
+	ex = c.execute('select * from vendas')
+	ex = ex.fetchall()
+	data = ""
+	for i in ex:
+		for j in i:
+			data += str(j)+","
+		data += ";"
+	if data == "":
+		data = "semVendas"
+	return data
+
+def saldo(nome):
+	c,conn = dbConnect()
+	ex = c.execute('select reais from users where nome = "%s"' % nome)
+	reais = ex.fetchone()[0]
+	ex = c.execute('select btc from users where nome = "%s"' % nome)
+	saldo = "%s,%s" % (str(reais),str(ex.fetchone()[0]))
+	return saldo
+
+def clientHandler(clientsocket,adress):
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 	print "Conexão de ",address
 	data = clientsocket.recv(100)
 	print 'Recebido: "%s"' % data
 	data = data.split()
 	retorno = ""
+<<<<<<< HEAD
 	# Direcionamentos para as funções corretas:
+=======
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 	if len(data) == 0:
 		retorno = "Uso incorreto do comando."
 	elif data[0] == 'comprar':
@@ -358,6 +476,7 @@ def clientHandler(clientsocket,address): # Função principal
 		retorno = vendas()
 	elif data[0] == 'saldo':
 		retorno = saldo(data[1])
+<<<<<<< HEAD
 	elif data[0] == 'depositar':
 		retorno = newAddress(data[1]);
 	elif data[0] == 'deposito':
@@ -374,5 +493,15 @@ if __name__ == "__main__":
 	serversocket.bind(('', 7254))
 	serversocket.listen(4)
 	while True: # Lida com as conexões
+=======
+	clientsocket.sendall(retorno)
+	
+if __name__ == "__main__":
+	# Configurando socket do servidor
+	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	serversocket.bind(('', 7254))
+	serversocket.listen(4)
+	while True:
+>>>>>>> 9b48e2e0db16cc54a1e8141ca9768c2d6007879a
 		clientsocket, address = serversocket.accept()
 		thread.start_new_thread(clientHandler, (clientsocket, address))
